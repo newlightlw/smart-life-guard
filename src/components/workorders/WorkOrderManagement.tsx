@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { CreateWorkOrderDialog } from "./CreateWorkOrderDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -147,6 +148,8 @@ export function WorkOrderManagement() {
   const [selectedPriority, setSelectedPriority] = useState("全部");
   const [selectedStatus, setSelectedStatus] = useState("全部");
   const [selectedCategory, setSelectedCategory] = useState("全部");
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEmergencyDialog, setShowEmergencyDialog] = useState(false);
 
   const filteredOrders = workOrders.filter(order => {
     const matchesSearch = order.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,11 +180,11 @@ export function WorkOrderManagement() {
           <p className="text-muted-foreground">管理设备维修与维护工单全流程</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setShowEmergencyDialog(true)}>
             <AlertTriangle className="h-4 w-4 mr-2" />
             紧急派单
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowCreateDialog(true)}>
             <Plus className="h-4 w-4 mr-2" />
             创建工单
           </Button>
@@ -353,6 +356,16 @@ export function WorkOrderManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      <CreateWorkOrderDialog 
+        open={showCreateDialog} 
+        onOpenChange={setShowCreateDialog} 
+      />
+      <CreateWorkOrderDialog 
+        open={showEmergencyDialog} 
+        onOpenChange={setShowEmergencyDialog} 
+        isEmergency={true}
+      />
     </div>
   );
 }

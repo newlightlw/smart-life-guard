@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AlertRulesDialog } from "./AlertRulesDialog";
+import { NotificationSettingsDialog } from "./NotificationSettingsDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -161,6 +163,8 @@ export function AlertCenter() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("全部");
   const [selectedStatus, setSelectedStatus] = useState("全部");
+  const [showRulesDialog, setShowRulesDialog] = useState(false);
+  const [showNotificationDialog, setShowNotificationDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("全部");
 
   const filteredAlerts = alerts.filter(alert => {
@@ -190,11 +194,11 @@ export function AlertCenter() {
           <p className="text-muted-foreground">智能设备告警监控与处理中心</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setShowRulesDialog(true)}>
             <Settings className="h-4 w-4 mr-2" />
             告警规则
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowNotificationDialog(true)}>
             <Bell className="h-4 w-4 mr-2" />
             通知设置
           </Button>

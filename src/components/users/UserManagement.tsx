@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AddUserDialog } from "./AddUserDialog";
+import { PermissionTemplateDialog } from "./PermissionTemplateDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -179,6 +181,8 @@ export function UserManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("全部");
   const [selectedRole, setSelectedRole] = useState("全部");
+  const [showAddUserDialog, setShowAddUserDialog] = useState(false);
+  const [showTemplateDialog, setShowTemplateDialog] = useState(false);
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -203,11 +207,11 @@ export function UserManagement() {
           <p className="text-muted-foreground">管理系统用户账户、角色权限和操作日志</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setShowTemplateDialog(true)}>
             <Shield className="h-4 w-4 mr-2" />
             权限模板
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowAddUserDialog(true)}>
             <UserPlus className="h-4 w-4 mr-2" />
             添加用户
           </Button>
@@ -500,6 +504,15 @@ export function UserManagement() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <AddUserDialog 
+        open={showAddUserDialog} 
+        onOpenChange={setShowAddUserDialog} 
+      />
+      <PermissionTemplateDialog 
+        open={showTemplateDialog} 
+        onOpenChange={setShowTemplateDialog} 
+      />
     </div>
   );
 }

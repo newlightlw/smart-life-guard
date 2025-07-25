@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { AddDeviceDialog } from "./AddDeviceDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -134,6 +135,7 @@ export function DeviceManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("全部");
   const [selectedStatus, setSelectedStatus] = useState("全部");
+  const [showAddDialog, setShowAddDialog] = useState(false);
 
   const filteredDevices = devices.filter(device => {
     const matchesSearch = device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -154,11 +156,30 @@ export function DeviceManagement() {
           <p className="text-muted-foreground">管理社区内所有智能设备的全生命周期</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => {
+            const csvData = [
+              ["设备ID", "设备名称", "设备类型", "位置", "状态", "最后上报时间"],
+              ...filteredDevices.map(device => [
+                device.id, device.name, device.type, device.location,
+                device.status === "online" ? "在线" : device.status === "offline" ? "离线" :
+                device.status === "warning" ? "告警" : "维护", device.lastOnline
+              ])
+            ];
+            const csvContent = csvData.map(row => row.join(",")).join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `设备列表_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }}>
             <Download className="h-4 w-4 mr-2" />
             导出
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowAddDialog(true)}>
             <Plus className="h-4 w-4 mr-2" />
             添加设备
           </Button>
@@ -285,6 +306,11 @@ export function DeviceManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      <AddDeviceDialog 
+        open={showAddDialog} 
+        onOpenChange={setShowAddDialog} 
+      />
     </div>
   );
 }
