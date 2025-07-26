@@ -146,6 +146,61 @@ export function AlertRulesDialog({ open, onOpenChange }: AlertRulesDialogProps) 
     setNewRule({ ...newRule, actions });
   };
 
+  const handleEditRule = (ruleId: string) => {
+    const rule = rules.find(r => r.id === ruleId);
+    if (rule) {
+      setNewRule({
+        name: rule.name,
+        description: rule.description,
+        deviceType: rule.deviceType,
+        condition: rule.condition,
+        level: rule.level,
+        enabled: rule.enabled,
+        actions: rule.actions
+      });
+      setEditingRule(ruleId);
+      setIsCreating(true);
+    }
+  };
+
+  const handleSaveEdit = () => {
+    if (!newRule.name || !newRule.condition) {
+      toast({
+        title: "表单验证失败",
+        description: "请填写规则名称和触发条件",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setRules(rules.map(rule => 
+      rule.id === editingRule 
+        ? { ...rule, ...newRule }
+        : rule
+    ));
+
+    setNewRule({
+      name: "", description: "", deviceType: "全部",
+      condition: "", level: "medium", enabled: true, actions: []
+    });
+    setEditingRule(null);
+    setIsCreating(false);
+
+    toast({
+      title: "规则更新成功",
+      description: `告警规则已成功更新`
+    });
+  };
+
+  const resetForm = () => {
+    setNewRule({
+      name: "", description: "", deviceType: "全部",
+      condition: "", level: "medium", enabled: true, actions: []
+    });
+    setEditingRule(null);
+    setIsCreating(false);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh]">
@@ -177,7 +232,11 @@ export function AlertRulesDialog({ open, onOpenChange }: AlertRulesDialogProps) 
                           checked={rule.enabled}
                           onCheckedChange={() => handleToggleRule(rule.id)}
                         />
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEditRule(rule.id)}
+                        >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button 
@@ -317,10 +376,15 @@ export function AlertRulesDialog({ open, onOpenChange }: AlertRulesDialogProps) 
               </div>
             </div>
 
-            <div className="flex justify-end">
-              <Button onClick={handleCreateRule}>
+            <div className="flex justify-end gap-2">
+              {isCreating && (
+                <Button variant="outline" onClick={resetForm}>
+                  取消
+                </Button>
+              )}
+              <Button onClick={editingRule ? handleSaveEdit : handleCreateRule}>
                 <Plus className="h-4 w-4 mr-2" />
-                创建规则
+                {editingRule ? "保存修改" : "创建规则"}
               </Button>
             </div>
           </TabsContent>

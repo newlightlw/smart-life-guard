@@ -419,21 +419,168 @@ export function AlertCenter() {
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                告警趋势分析
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-12">
-                <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-muted-foreground">趋势分析报告</h3>
-                <p className="text-sm text-muted-foreground mt-2">基于历史数据的告警趋势分析和预测</p>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 告警趋势图表 */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  告警趋势分析
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="h-48 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <TrendingUp className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">7天告警趋势图表</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-red-600">↑15%</div>
+                      <div className="text-muted-foreground">本周增长</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-lg font-bold text-green-600">2.3小时</div>
+                      <div className="text-muted-foreground">平均响应时间</div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 告警类型分布 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>告警类型分布</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="h-48 bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-16 h-16 bg-emerald-200 rounded-full mx-auto mb-2 flex items-center justify-center">
+                        <div className="text-emerald-800 font-bold">饼图</div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">告警类型分布图</p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-red-500 rounded"></div>
+                        <span className="text-sm">网络故障</span>
+                      </div>
+                      <span className="text-sm font-medium">42%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-yellow-500 rounded"></div>
+                        <span className="text-sm">硬件异常</span>
+                      </div>
+                      <span className="text-sm font-medium">28%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                        <span className="text-sm">环境告警</span>
+                      </div>
+                      <span className="text-sm font-medium">20%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 bg-green-500 rounded"></div>
+                        <span className="text-sm">其他</span>
+                      </div>
+                      <span className="text-sm font-medium">10%</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 设备告警排行 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>高频告警设备TOP5</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {[
+                    { name: "智能门锁-A栋101", count: 23, trend: "up" },
+                    { name: "监控摄像头-大堂", count: 18, trend: "down" },
+                    { name: "智能空调-会议室", count: 15, trend: "up" },
+                    { name: "烟雾探测器-走廊", count: 12, trend: "stable" },
+                    { name: "环境传感器-地下室", count: 9, trend: "down" }
+                  ].map((device, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          index === 0 ? 'bg-red-100 text-red-800' :
+                          index === 1 ? 'bg-orange-100 text-orange-800' :
+                          index === 2 ? 'bg-yellow-100 text-yellow-800' :
+                          'bg-blue-100 text-blue-800'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <span className="text-sm font-medium">{device.name}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold">{device.count}</span>
+                        <div className={`text-xs ${
+                          device.trend === 'up' ? 'text-red-600' :
+                          device.trend === 'down' ? 'text-green-600' :
+                          'text-gray-600'
+                        }`}>
+                          {device.trend === 'up' ? '↗' : device.trend === 'down' ? '↙' : '→'}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 分析报告 */}
+            <Card>
+              <CardHeader>
+                <CardTitle>智能分析报告</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-medium text-blue-900 mb-2">📊 本周告警概况</h4>
+                    <p className="text-sm text-blue-800">
+                      本周共产生156条告警，较上周增长15%。主要集中在网络连接故障和设备离线问题。
+                    </p>
+                  </div>
+                  
+                  <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h4 className="font-medium text-yellow-900 mb-2">⚠️ 风险提醒</h4>
+                    <p className="text-sm text-yellow-800">
+                      A栋101智能门锁告警频率异常，建议安排专人检查硬件状态和网络连接。
+                    </p>
+                  </div>
+
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <h4 className="font-medium text-green-900 mb-2">💡 优化建议</h4>
+                    <ul className="text-sm text-green-800 space-y-1">
+                      <li>• 建议增强A栋网络信号覆盖</li>
+                      <li>• 定期维护高频告警设备</li>
+                      <li>• 优化告警规则减少误报</li>
+                    </ul>
+                  </div>
+
+                  <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                    <h4 className="font-medium text-purple-900 mb-2">🔮 预测分析</h4>
+                    <p className="text-sm text-purple-800">
+                      基于历史数据分析，预计下周告警数量将保持在当前水平，建议提前准备相关资源。
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

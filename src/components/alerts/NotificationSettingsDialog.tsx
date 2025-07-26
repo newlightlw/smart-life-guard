@@ -80,10 +80,55 @@ export function NotificationSettingsDialog({ open, onOpenChange }: NotificationS
     });
   };
 
+  const [newEmail, setNewEmail] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+
   const handleTestNotification = (type: string) => {
     toast({
       title: "测试通知已发送",
       description: `${type}测试通知已发送，请检查接收情况`
+    });
+  };
+
+  const addEmailRecipient = () => {
+    if (newEmail && !emailSettings.recipients.includes(newEmail)) {
+      setEmailSettings({
+        ...emailSettings,
+        recipients: [...emailSettings.recipients, newEmail]
+      });
+      setNewEmail("");
+      toast({
+        title: "邮箱已添加",
+        description: "新的邮件接收人已成功添加"
+      });
+    }
+  };
+
+  const removeEmailRecipient = (email: string) => {
+    setEmailSettings({
+      ...emailSettings,
+      recipients: emailSettings.recipients.filter(e => e !== email)
+    });
+  };
+
+  const addPhoneRecipient = () => {
+    if (newPhone && !smsSettings.recipients.includes(newPhone)) {
+      setSmsSettings({
+        ...smsSettings,
+        recipients: [...smsSettings.recipients, newPhone]
+      });
+      setNewPhone("");
+      toast({
+        title: "手机号已添加",
+        description: "新的短信接收人已成功添加"
+      });
+    }
+  };
+
+  const removePhoneRecipient = (phone: string) => {
+    setSmsSettings({
+      ...smsSettings,
+      recipients: smsSettings.recipients.filter(p => p !== phone)
     });
   };
 
@@ -329,12 +374,23 @@ export function NotificationSettingsDialog({ open, onOpenChange }: NotificationS
                   {emailSettings.recipients.map((email, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
                       <span className="text-sm">{email}</span>
-                      <Button variant="ghost" size="sm">删除</Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => removeEmailRecipient(email)}
+                      >
+                        删除
+                      </Button>
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Input placeholder="添加邮箱地址" />
-                    <Button size="sm">添加</Button>
+                    <Input 
+                      placeholder="添加邮箱地址" 
+                      value={newEmail}
+                      onChange={(e) => setNewEmail(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && addEmailRecipient()}
+                    />
+                    <Button size="sm" onClick={addEmailRecipient}>添加</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -347,12 +403,23 @@ export function NotificationSettingsDialog({ open, onOpenChange }: NotificationS
                   {smsSettings.recipients.map((phone, index) => (
                     <div key={index} className="flex items-center justify-between p-2 bg-muted rounded">
                       <span className="text-sm">{phone}</span>
-                      <Button variant="ghost" size="sm">删除</Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => removePhoneRecipient(phone)}
+                      >
+                        删除
+                      </Button>
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Input placeholder="添加手机号码" />
-                    <Button size="sm">添加</Button>
+                    <Input 
+                      placeholder="添加手机号码" 
+                      value={newPhone}
+                      onChange={(e) => setNewPhone(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && addPhoneRecipient()}
+                    />
+                    <Button size="sm" onClick={addPhoneRecipient}>添加</Button>
                   </div>
                 </CardContent>
               </Card>
