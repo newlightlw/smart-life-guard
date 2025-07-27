@@ -3,6 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddDeviceDialog } from "./AddDeviceDialog";
 import { QRCodeDialog } from "./QRCodeDialog";
+import { DeviceDetailDialog } from "./DeviceDetailDialog";
+import { EditDeviceDialog } from "./EditDeviceDialog";
+import { DeviceControlDialog } from "./DeviceControlDialog";
+import { DeviceDiagnosisDialog } from "./DeviceDiagnosisDialog";
+import { MaintenanceRecordDialog } from "./MaintenanceRecordDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -168,6 +173,11 @@ export function DeviceManagement() {
   const [selectedDevice, setSelectedDevice] = useState<typeof devices[0] | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [deviceToDelete, setDeviceToDelete] = useState<string>("");
+  const [showDetailDialog, setShowDetailDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showControlDialog, setShowControlDialog] = useState(false);
+  const [showDiagnosisDialog, setShowDiagnosisDialog] = useState(false);
+  const [showMaintenanceDialog, setShowMaintenanceDialog] = useState(false);
   const { toast } = useToast();
 
   const filteredDevices = devices.filter(device => {
@@ -181,37 +191,23 @@ export function DeviceManagement() {
   });
 
   const handleDeviceAction = (action: string, device: typeof devices[0]) => {
+    setSelectedDevice(device);
+    
     switch (action) {
       case "view":
-        toast({
-          title: "查看详情",
-          description: `正在查看设备 ${device.name} 的详细信息`,
-        });
+        setShowDetailDialog(true);
         break;
       case "edit":
-        toast({
-          title: "编辑设备",
-          description: `正在编辑设备 ${device.name}`,
-        });
+        setShowEditDialog(true);
         break;
       case "control":
-        const newStatus = device.status === "online" ? "offline" : "online";
-        toast({
-          title: "远程控制",
-          description: `设备 ${device.name} 已${newStatus === "online" ? "启动" : "关闭"}`,
-        });
+        setShowControlDialog(true);
         break;
       case "diagnose":
-        toast({
-          title: "设备诊断",
-          description: `正在对设备 ${device.name} 进行健康诊断...`,
-        });
+        setShowDiagnosisDialog(true);
         break;
       case "maintenance":
-        toast({
-          title: "维护记录",
-          description: `查看设备 ${device.name} 的维护历史记录`,
-        });
+        setShowMaintenanceDialog(true);
         break;
       case "delete":
         setDeviceToDelete(device.id);
@@ -461,11 +457,43 @@ export function DeviceManagement() {
       />
       
       {selectedDevice && (
-        <QRCodeDialog
-          open={showQRDialog}
-          onOpenChange={setShowQRDialog}
-          device={selectedDevice}
-        />
+        <>
+          <QRCodeDialog
+            open={showQRDialog}
+            onOpenChange={setShowQRDialog}
+            device={selectedDevice}
+          />
+          
+          <DeviceDetailDialog
+            open={showDetailDialog}
+            onOpenChange={setShowDetailDialog}
+            device={selectedDevice}
+          />
+          
+          <EditDeviceDialog
+            open={showEditDialog}
+            onOpenChange={setShowEditDialog}
+            device={selectedDevice}
+          />
+          
+          <DeviceControlDialog
+            open={showControlDialog}
+            onOpenChange={setShowControlDialog}
+            device={selectedDevice}
+          />
+          
+          <DeviceDiagnosisDialog
+            open={showDiagnosisDialog}
+            onOpenChange={setShowDiagnosisDialog}
+            device={selectedDevice}
+          />
+          
+          <MaintenanceRecordDialog
+            open={showMaintenanceDialog}
+            onOpenChange={setShowMaintenanceDialog}
+            device={selectedDevice}
+          />
+        </>
       )}
 
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
