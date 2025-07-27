@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AddDeviceDialog } from "./AddDeviceDialog";
+import { QRCodeDialog } from "./QRCodeDialog";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { 
@@ -136,6 +137,8 @@ export function DeviceManagement() {
   const [selectedType, setSelectedType] = useState("全部");
   const [selectedStatus, setSelectedStatus] = useState("全部");
   const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showQRDialog, setShowQRDialog] = useState(false);
+  const [selectedDevice, setSelectedDevice] = useState<typeof devices[0] | null>(null);
 
   const filteredDevices = devices.filter(device => {
     const matchesSearch = device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -292,7 +295,14 @@ export function DeviceManagement() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setSelectedDevice(device);
+                          setShowQRDialog(true);
+                        }}
+                      >
                         <QrCode className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="sm">
@@ -311,6 +321,14 @@ export function DeviceManagement() {
         open={showAddDialog} 
         onOpenChange={setShowAddDialog} 
       />
+      
+      {selectedDevice && (
+        <QRCodeDialog
+          open={showQRDialog}
+          onOpenChange={setShowQRDialog}
+          device={selectedDevice}
+        />
+      )}
     </div>
   );
 }
