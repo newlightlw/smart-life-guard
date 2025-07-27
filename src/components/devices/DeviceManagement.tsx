@@ -20,6 +20,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { 
   Plus, 
   Search, 
@@ -30,8 +48,17 @@ import {
   WifiOff,
   AlertTriangle,
   Wrench,
-  QrCode
+  QrCode,
+  Eye,
+  Edit,
+  Settings,
+  Activity,
+  FileText,
+  Trash2,
+  Power,
+  PowerOff
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 // 模拟设备数据
 const devices = [
@@ -139,6 +166,9 @@ export function DeviceManagement() {
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showQRDialog, setShowQRDialog] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState<typeof devices[0] | null>(null);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deviceToDelete, setDeviceToDelete] = useState<string>("");
+  const { toast } = useToast();
 
   const filteredDevices = devices.filter(device => {
     const matchesSearch = device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -149,6 +179,56 @@ export function DeviceManagement() {
     
     return matchesSearch && matchesType && matchesStatus;
   });
+
+  const handleDeviceAction = (action: string, device: typeof devices[0]) => {
+    switch (action) {
+      case "view":
+        toast({
+          title: "查看详情",
+          description: `正在查看设备 ${device.name} 的详细信息`,
+        });
+        break;
+      case "edit":
+        toast({
+          title: "编辑设备",
+          description: `正在编辑设备 ${device.name}`,
+        });
+        break;
+      case "control":
+        const newStatus = device.status === "online" ? "offline" : "online";
+        toast({
+          title: "远程控制",
+          description: `设备 ${device.name} 已${newStatus === "online" ? "启动" : "关闭"}`,
+        });
+        break;
+      case "diagnose":
+        toast({
+          title: "设备诊断",
+          description: `正在对设备 ${device.name} 进行健康诊断...`,
+        });
+        break;
+      case "maintenance":
+        toast({
+          title: "维护记录",
+          description: `查看设备 ${device.name} 的维护历史记录`,
+        });
+        break;
+      case "delete":
+        setDeviceToDelete(device.id);
+        setShowDeleteDialog(true);
+        break;
+    }
+  };
+
+  const handleDeleteDevice = () => {
+    toast({
+      title: "删除成功",
+      description: `设备 ${deviceToDelete} 已成功删除`,
+      variant: "destructive",
+    });
+    setShowDeleteDialog(false);
+    setDeviceToDelete("");
+  };
 
   return (
     <div className="space-y-6">
@@ -305,9 +385,67 @@ export function DeviceManagement() {
                       >
                         <QrCode className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                          <DropdownMenuLabel>设备操作</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          
+                          <DropdownMenuItem onClick={() => handleDeviceAction("view", device)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            查看详情
+                          </DropdownMenuItem>
+                          
+                          <DropdownMenuItem onClick={() => handleDeviceAction("edit", device)}>
+                            <Edit className="h-4 w-4 mr-2" />
+                            编辑设备
+                          </DropdownMenuItem>
+                          
+                          <DropdownMenuItem 
+                            onClick={() => handleDeviceAction("control", device)}
+                            disabled={device.status === "offline"}
+                          >
+                            {device.status === "online" ? (
+                              <>
+                                <PowerOff className="h-4 w-4 mr-2" />
+                                关闭设备
+                              </>
+                            ) : (
+                              <>
+                                <Power className="h-4 w-4 mr-2" />
+                                启动设备
+                              </>
+                            )}
+                          </DropdownMenuItem>
+                          
+                          <DropdownMenuSeparator />
+                          
+                          <DropdownMenuItem onClick={() => handleDeviceAction("diagnose", device)}>
+                            <Activity className="h-4 w-4 mr-2" />
+                            设备诊断
+                          </DropdownMenuItem>
+                          
+                          <DropdownMenuItem onClick={() => handleDeviceAction("maintenance", device)}>
+                            <FileText className="h-4 w-4 mr-2" />
+                            维护记录
+                          </DropdownMenuItem>
+                          
+                          <DropdownMenuSeparator />
+                          
+                          <DropdownMenuItem 
+                            onClick={() => handleDeviceAction("delete", device)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            删除设备
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -329,6 +467,27 @@ export function DeviceManagement() {
           device={selectedDevice}
         />
       )}
+
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>确认删除设备</AlertDialogTitle>
+            <AlertDialogDescription>
+              此操作将永久删除设备 {deviceToDelete}，包括所有相关的历史数据和配置信息。
+              此操作不可撤销，请确认是否继续？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={handleDeleteDevice}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              确认删除
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
