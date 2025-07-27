@@ -5,6 +5,7 @@ import { DeviceManagement } from "@/components/devices/DeviceManagement";
 import { WorkOrderManagement } from "@/components/workorders/WorkOrderManagement";
 import { MonitoringCenter } from "@/components/monitoring/MonitoringCenter";
 import { AlertCenter } from "@/components/alerts/AlertCenter";
+import { FileManagement } from "@/components/files/FileManagement";
 import { UserManagement } from "@/components/users/UserManagement";
 import { SystemSettings } from "@/components/settings/SystemSettings";
 
@@ -23,6 +24,8 @@ const Index = () => {
         return <MonitoringCenter />;
       case "alerts":
         return <AlertCenter />;
+      case "files":
+        return <FileManagement />;
       case "users":
         return <UserManagement />;
       case "settings":

@@ -10,6 +10,7 @@ import {
   Users, 
   BarChart3, 
   Settings,
+  Files,
   Bell,
   Search,
   Menu,
@@ -29,6 +30,7 @@ const navigationItems = [
   { id: "monitoring", label: "监控中心", icon: BarChart3 },
   { id: "workorders", label: "工单管理", icon: ClipboardList },
   { id: "alerts", label: "告警中心", icon: AlertTriangle },
+  { id: "files", label: "文件管理", icon: Files },
   { id: "users", label: "用户管理", icon: Users },
   { id: "settings", label: "系统设置", icon: Settings },
 ];
