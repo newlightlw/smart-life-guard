@@ -31,7 +31,7 @@ const navigationItems = [
   { id: "workorders", label: "工单管理", icon: ClipboardList },
   { id: "alerts", label: "告警中心", icon: AlertTriangle },
   { id: "files", label: "文件管理", icon: Files },
-  { id: "users", label: "用户管理", icon: Users },
+  { id: "users", label: "人员管理", icon: Users },
   { id: "settings", label: "系统设置", icon: Settings },
 ];
 

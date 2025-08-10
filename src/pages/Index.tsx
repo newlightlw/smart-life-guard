@@ -6,7 +6,7 @@ import { WorkOrderManagement } from "@/components/workorders/WorkOrderManagement
 import { MonitoringCenter } from "@/components/monitoring/MonitoringCenter";
 import { AlertCenter } from "@/components/alerts/AlertCenter";
 import { FileManagement } from "@/components/files/FileManagement";
-import { UserManagement } from "@/components/users/UserManagement";
+import { PersonnelManagement } from "@/components/personnel/PersonnelManagement";
 import { SystemSettings } from "@/components/settings/SystemSettings";
 
 const Index = () => {
@@ -27,7 +27,7 @@ const Index = () => {
       case "files":
         return <FileManagement />;
       case "users":
-        return <UserManagement />;
+        return <PersonnelManagement />;
       case "settings":
         return <SystemSettings />;
       default:
