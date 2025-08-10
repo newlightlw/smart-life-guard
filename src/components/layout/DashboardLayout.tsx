@@ -14,7 +14,8 @@ import {
   Bell,
   Search,
   Menu,
-  X
+  X,
+  Boxes
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +33,7 @@ const navigationItems = [
   { id: "alerts", label: "告警中心", icon: AlertTriangle },
   { id: "files", label: "文件管理", icon: Files },
   { id: "users", label: "人员管理", icon: Users },
+  { id: "assets", label: "资产管理", icon: Boxes },
   { id: "settings", label: "系统设置", icon: Settings },
 ];
 

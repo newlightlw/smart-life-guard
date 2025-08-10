@@ -8,6 +8,7 @@ import { AlertCenter } from "@/components/alerts/AlertCenter";
 import { FileManagement } from "@/components/files/FileManagement";
 import { PersonnelManagement } from "@/components/personnel/PersonnelManagement";
 import { SystemSettings } from "@/components/settings/SystemSettings";
+import { AssetManagement } from "@/components/assets/AssetManagement";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -30,6 +31,8 @@ const Index = () => {
         return <PersonnelManagement />;
       case "settings":
         return <SystemSettings />;
+      case "assets":
+        return <AssetManagement />;
       default:
         return <MetricsOverview />;
     }
